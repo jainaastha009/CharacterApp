@@ -4,7 +4,7 @@ import { fetchEpisodes, fetchCharacters, fetchEpisodeCharacters, resetCharacters
 
 const ImageFeed = () => {
   const dispatch = useDispatch();
-  const { episodes, characters, selectedEpisode } = useSelector((state) => state.episodes);
+  const { episodes, characters, selectedEpisode, error } = useSelector((state) => state.episodes);
 
   // Local state for pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,6 +41,11 @@ const ImageFeed = () => {
   const selectedEpisodeDetails = episodes.find((episode) => episode.id === selectedEpisode);
   const selectedEpisodeName = selectedEpisodeDetails ? selectedEpisodeDetails.name : '';
 
+  const handleResetCharacters = () => {
+    dispatch(resetCharacters());
+    setCurrentPage(1); // Reset to page 1 when characters are reset
+  };
+
   return (
     <div className="flex flex-col justify-center p-4 ml-0 text-center md:flex-row md:ml-72 ">
       {/* Sidebar for Episodes (responsive) */}
@@ -62,15 +67,17 @@ const ImageFeed = () => {
         </ul>
         <button
           className="w-full px-4 py-2 mt-4 text-white bg-red-500 rounded"
-          onClick={() => dispatch(resetCharacters())}
+          onClick={handleResetCharacters} // Call the reset handler here
         >
           Reset Characters
         </button>
       </div>
 
-      <div className="w-full p-4 md:w-3/4 md:ml-1/4" >
+      <div className="w-full p-4 md:w-3/4 md:ml-1/4">
         <h2 className="mb-3 text-2xl font-bold">Rick and Morty Character</h2>
         <h2 className="mb-3 text-xl">{characters.length > 0 ? `${characters.length} Characters in episode ${selectedEpisodeName}` : 'No Characters Selected.'}</h2>
+
+        {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3">
           {currentCharacters.length > 0 ? (
@@ -87,7 +94,7 @@ const ImageFeed = () => {
               </div>
             ))
           ) : (
-            <p className="col-span-3 text-center"></p>
+            <p className="col-span-3 text-center">No characters to display.</p>
           )}
         </div>
 
