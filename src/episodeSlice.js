@@ -53,6 +53,7 @@ const episodeSlice = createSlice({
   },
   reducers: {
     resetCharacters: (state) => {
+      state.characters = []; // Clear characters
       state.selectedEpisode = null;
       state.error = null; // Clear error on reset
     },
